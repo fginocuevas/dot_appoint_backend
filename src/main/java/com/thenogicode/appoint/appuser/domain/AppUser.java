@@ -49,5 +49,9 @@ public abstract class AppUser extends AbstractPersistableCustom<Long> {
     private Integer roleType;
 	
 	//TODO Implement date time properties such as createdBy in the future
+	
+	public String getUserDisplayName() {
+		return this.getFirstname().concat(" ").concat(getLastname());
+	}
 
 }

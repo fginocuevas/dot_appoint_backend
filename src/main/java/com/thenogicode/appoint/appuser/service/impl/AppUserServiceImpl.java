@@ -8,8 +8,8 @@ import com.thenogicode.appoint.appuser.domain.DoctorAppUser;
 import com.thenogicode.appoint.appuser.domain.SchedulerAppUser;
 import com.thenogicode.appoint.appuser.repository.AppUserRepository;
 import com.thenogicode.appoint.appuser.service.AppUserService;
-import com.thenogicode.appoint.appuser.util.AppUserUtils;
 import com.thenogicode.appoint.core.appuser.utils.AppUserConstants;
+import com.thenogicode.appoint.util.AppUserUtils;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;

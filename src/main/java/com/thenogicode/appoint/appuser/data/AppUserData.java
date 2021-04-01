@@ -1,5 +1,9 @@
 package com.thenogicode.appoint.appuser.data;
 
+import java.util.List;
+
+import com.thenogicode.appoint.event.data.EventData;
+
 import lombok.Builder;
 import lombok.Data;
 
@@ -13,4 +17,5 @@ public class AppUserData {
 	private String lastname;
 	private String status;
 	private String role;
+	private List<EventData> events;
 }
