@@ -14,7 +14,7 @@ import com.thenogicode.appoint.event.domain.Event;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class AppUserUtils {
+public class AdapterUtils {
 	
 	public static AppUserData generateAppUserDataFrom(AppUser user) {
 		

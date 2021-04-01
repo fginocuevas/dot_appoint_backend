@@ -1,6 +1,10 @@
 package com.thenogicode.appoint.event.service.impl;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -12,6 +16,7 @@ import com.thenogicode.appoint.event.data.EventData;
 import com.thenogicode.appoint.event.domain.Event;
 import com.thenogicode.appoint.event.repository.EventRepository;
 import com.thenogicode.appoint.event.service.EventService;
+import com.thenogicode.appoint.util.AdapterUtils;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -72,6 +77,18 @@ public class EventServiceImpl implements EventService {
 		eventRepository.deleteById(id);
 	}
 
+	@Override
+	public List<EventData> retrieveByRange(String startDate, String endDate, DoctorAppUser doctor) {
+		
+		LocalDate startDateLocal= LocalDate.parse(startDate, DateTimeFormatter.ISO_LOCAL_DATE);
+		LocalDate endDateLocal= LocalDate.parse(endDate, DateTimeFormatter.ISO_LOCAL_DATE);
+		
+		List<Event> events= eventRepository.retrieveAllByRange(startDateLocal, endDateLocal);
+		
+		return events.stream().map(AdapterUtils::generateEventDateFrom)
+					.collect(Collectors.toList());
+	}
+	
 	private Event generatedEventFrom(CreateEventRequest request, DoctorAppUser doctor, SchedulerAppUser scheduler) {
 		return Event.builder()
 				.eventDate(request.getEventDate())
