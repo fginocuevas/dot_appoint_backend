@@ -30,10 +30,22 @@ public class EventApiResource {
 		return eventService.createNewEvent(request);
 	}
 	
-	@GetMapping(value="/retrieveAll")
+	@GetMapping(value="/retrieveByDateRange",
+			consumes= MediaType.APPLICATION_JSON_VALUE, 
+			produces= MediaType.APPLICATION_JSON_VALUE)
 	public List<EventData> retrieveEventsByRange(@RequestParam(name = "startDate")  String startDate, 
 			@RequestParam(name = "endDate")  String endDate){
 		return eventService.retrieveByRange(startDate, endDate, null);
+	}
+	
+	@GetMapping(value="/retrieveByDateRangeAndDoctor",
+			consumes= MediaType.APPLICATION_JSON_VALUE, 
+			produces= MediaType.APPLICATION_JSON_VALUE)
+	public List<EventData> retrieveEventsByRangeAndDoctor(
+			@RequestParam(name = "startDate")  String startDate, 
+			@RequestParam(name = "endDate")  String endDate, 
+			@RequestParam(name = "doctorId")  Long doctorId){
+		return eventService.retrieveByRange(startDate, endDate, doctorId);
 	}
 
 }

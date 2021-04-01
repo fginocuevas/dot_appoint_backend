@@ -3,6 +3,7 @@ package com.thenogicode.appoint.event.service.impl;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -78,12 +79,18 @@ public class EventServiceImpl implements EventService {
 	}
 
 	@Override
-	public List<EventData> retrieveByRange(String startDate, String endDate, DoctorAppUser doctor) {
+	public List<EventData> retrieveByRange(String startDate, String endDate, Long doctorId) {
 		
 		LocalDate startDateLocal= LocalDate.parse(startDate, DateTimeFormatter.ISO_LOCAL_DATE);
 		LocalDate endDateLocal= LocalDate.parse(endDate, DateTimeFormatter.ISO_LOCAL_DATE);
 		
-		List<Event> events= eventRepository.retrieveAllByRange(startDateLocal, endDateLocal);
+		List<Event> events= new ArrayList<Event>();
+		
+		if(doctorId == null) {
+			events= eventRepository.retrieveAllByRange(startDateLocal, endDateLocal);
+		} else {
+			events= eventRepository.retrieveAllByRangeAndDoctorId(startDateLocal, endDateLocal, doctorId);
+		}
 		
 		return events.stream().map(AdapterUtils::generateEventDateFrom)
 					.collect(Collectors.toList());
