@@ -4,9 +4,12 @@ import org.springframework.stereotype.Service;
 
 import com.thenogicode.appoint.appuser.data.AppUserData;
 import com.thenogicode.appoint.appuser.domain.AppUser;
+import com.thenogicode.appoint.appuser.domain.DoctorAppUser;
+import com.thenogicode.appoint.appuser.domain.SchedulerAppUser;
 import com.thenogicode.appoint.appuser.repository.AppUserRepository;
 import com.thenogicode.appoint.appuser.service.AppUserService;
 import com.thenogicode.appoint.appuser.util.AppUserUtils;
+import com.thenogicode.appoint.core.appuser.utils.AppUserConstants;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -29,11 +32,23 @@ public class AppUserServiceImpl implements AppUserService {
 		
 		return AppUserUtils.generateAppUserDataFrom(appUser);
 	}
-
+	
 	@Override
-	public AppUserData createNewAppUser(AppUser appUser) {
-		AppUser createdAppUser= appUserRepository.save(appUser);
+	public AppUserData createNewScheduler(SchedulerAppUser appUser) {
+		// Workaround for discriminator value not persisting right after create
+		appUser.setRoleType(AppUserConstants.DISCRIMINATOR_VALUE_SCHEDULER);
+		SchedulerAppUser createdAppUser= appUserRepository.saveAndFlush(appUser);
 		return AppUserUtils.generateAppUserDataFrom(createdAppUser);
 	}
+
+	@Override
+	public AppUserData createNewDoctor(DoctorAppUser appUser) {
+		// Workaround for discriminator value not persisting right after create
+		appUser.setRoleType(AppUserConstants.DISCRIMINATOR_VALUE_DOCTOR);
+		DoctorAppUser createdAppUser= appUserRepository.saveAndFlush(appUser);
+		return AppUserUtils.generateAppUserDataFrom(createdAppUser);
+	}
+
+	
 
 }

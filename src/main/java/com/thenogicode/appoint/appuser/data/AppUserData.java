@@ -12,5 +12,5 @@ public class AppUserData {
 	private String firstname;
 	private String lastname;
 	private String status;
-	private RoleData role;
+	private String role;
 }
