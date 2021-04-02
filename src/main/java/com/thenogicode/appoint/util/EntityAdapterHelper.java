@@ -47,6 +47,7 @@ public class EntityAdapterHelper {
 	public static EventData generateEventDateFrom(Event event) {
 		return EventData.builder()
 				.id(event.getId())
+				.patientName(event.getPatientName())
 				.eventDate(event.getEventDate())
 				.startTime(event.getStartTime())
 				.endTime(event.getEndTime())

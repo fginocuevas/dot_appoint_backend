@@ -11,6 +11,7 @@ import lombok.Data;
 @Builder
 public class EventData {
 	private Long id;
+	private String patientName;
 	private LocalDate eventDate;
 	private LocalTime startTime;
 	private LocalTime endTime;

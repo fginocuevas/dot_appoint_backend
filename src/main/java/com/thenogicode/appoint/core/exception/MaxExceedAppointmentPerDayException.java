@@ -2,7 +2,7 @@ package com.thenogicode.appoint.core.exception;
 
 import java.time.LocalDate;
 
-import com.thenogicode.appoint.core.appuser.utils.EventConstants;
+import com.thenogicode.appoint.core.utils.EventConstants;
 
 @SuppressWarnings("serial")
 public class MaxExceedAppointmentPerDayException extends AbstractApplicationException {

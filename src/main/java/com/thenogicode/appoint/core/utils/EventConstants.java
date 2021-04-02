@@ -1,4 +1,4 @@
-package com.thenogicode.appoint.core.appuser.utils;
+package com.thenogicode.appoint.core.utils;
 
 public class EventConstants {
 	

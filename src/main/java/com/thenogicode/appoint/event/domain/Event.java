@@ -31,6 +31,9 @@ import lombok.Setter;
 @Builder
 public class Event extends AbstractPersistableCustom<Long>{
 	
+	@Column(name = "patient_name", nullable= false)
+	private String patientName;
+	
 	@Column(name = "event_date", nullable= false)
 	private LocalDate eventDate;
 	

@@ -7,6 +7,7 @@ import lombok.Data;
 
 @Data
 public class CreateEventRequest {
+	private String patientName;
 	private LocalDate eventDate;
 	private LocalTime startTime;
 	private LocalTime endTime;

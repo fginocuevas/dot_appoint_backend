@@ -14,12 +14,13 @@ import org.springframework.stereotype.Service;
 import com.thenogicode.appoint.appuser.domain.DoctorAppUser;
 import com.thenogicode.appoint.appuser.domain.SchedulerAppUser;
 import com.thenogicode.appoint.appuser.repository.AppUserRepository;
-import com.thenogicode.appoint.core.appuser.utils.EventConstants;
 import com.thenogicode.appoint.core.exception.DataNotFoundException;
 import com.thenogicode.appoint.core.exception.DoctorUnableToAcceptEventException;
 import com.thenogicode.appoint.core.exception.GenericEventScheduleException;
 import com.thenogicode.appoint.core.exception.MaxExceedAcceptedAppointmentPerDayException;
 import com.thenogicode.appoint.core.exception.MaxExceedAppointmentPerDayException;
+import com.thenogicode.appoint.core.utils.EventConstants;
+import com.thenogicode.appoint.email.service.EmailService;
 import com.thenogicode.appoint.event.api.request.AcceptEventRequest;
 import com.thenogicode.appoint.event.api.request.CreateEventRequest;
 import com.thenogicode.appoint.event.data.EventData;
@@ -39,6 +40,7 @@ public class EventServiceImpl implements EventService {
 	
 	private final EventRepository eventRepository;
 	private final AppUserRepository appUserRepository;
+	private final EmailService emailService;
 
 	@Override
 	public List<EventData> retrieveByRange(String startDate, String endDate, Long doctorId) {
@@ -72,9 +74,16 @@ public class EventServiceImpl implements EventService {
 		
 		Event event= generatedNewEventFrom(request, doctor, scheduler);
 		
-		Event createdEvent= eventRepository.save(event);
+		Event createdEvent= eventRepository.saveAndFlush(event);
+		
+		// Send a notification email
+		if(createdEvent.getId() != null) {
+			emailService.sendNotificationEmailForAppointmentCreated(createdEvent, doctor);
+		}
 		
 		return EventData.builder()
+				.id(createdEvent.getId())
+				.patientName(createdEvent.getPatientName())
 				.eventDate(createdEvent.getEventDate())
 				.startTime(createdEvent.getStartTime())
 				.endTime(createdEvent.getEndTime())
@@ -196,6 +205,7 @@ public class EventServiceImpl implements EventService {
 
 	private Event generatedNewEventFrom(CreateEventRequest request, DoctorAppUser doctor, SchedulerAppUser scheduler) {
 		return Event.builder()
+				.patientName(request.getPatientName())
 				.eventDate(request.getEventDate())
 				.startTime(request.getStartTime())
 				.endTime(request.getEndTime())
