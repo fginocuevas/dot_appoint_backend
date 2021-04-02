@@ -6,9 +6,13 @@ import com.thenogicode.appoint.appuser.data.AppUserData;
 import com.thenogicode.appoint.appuser.domain.AppUser;
 import com.thenogicode.appoint.appuser.domain.DoctorAppUser;
 import com.thenogicode.appoint.appuser.domain.SchedulerAppUser;
+import com.thenogicode.appoint.appuser.domain.StatusTypeEnum;
 import com.thenogicode.appoint.appuser.repository.AppUserRepository;
 import com.thenogicode.appoint.appuser.service.AppUserService;
 import com.thenogicode.appoint.core.appuser.utils.AppUserConstants;
+import com.thenogicode.appoint.core.exception.DataNotFoundException;
+import com.thenogicode.appoint.core.exception.GenericException;
+import com.thenogicode.appoint.doctor.api.request.UpdateDoctorStatusRequest;
 import com.thenogicode.appoint.util.EntityAdapterHelper;
 
 import lombok.RequiredArgsConstructor;
@@ -49,6 +53,25 @@ public class AppUserServiceImpl implements AppUserService {
 		return EntityAdapterHelper.generateAppUserDataFrom(createdAppUser);
 	}
 
-	
+	@Override
+	public AppUserData updateDoctorStatus(UpdateDoctorStatusRequest request) {
+		
+		DoctorAppUser doctor= (DoctorAppUser) appUserRepository.findById(request.getDoctorId())
+				.orElseThrow(() -> new DataNotFoundException("doctor", request.getDoctorId().toString()));
+		
+		if(StatusTypeEnum.fromInt(request.getStatusType()) == null) {
+			throw new GenericException("Status type " + request.getStatusType() + " is invalid.");
+		} else if (doctor.getStatus().equals(request.getStatusType())) {
+			throw new GenericException("Doctor is already in the " 
+						+ StatusTypeEnum.fromInt(request.getStatusType()).getDisplayText() + " status.");
+		}
+		
+		doctor.setStatus(request.getStatusType());
+		
+		appUserRepository.saveAndFlush(doctor);
+		
+		return EntityAdapterHelper.generateAppUserDataFrom(doctor);
+		
+	}
 
 }

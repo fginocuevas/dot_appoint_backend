@@ -42,9 +42,15 @@ public abstract class AppUser extends AbstractPersistableCustom<Long> {
 	@Column(name = "password", nullable = false)
 	private String password;
 	
+	/**
+	 * See {@link StatusTypeEnum}
+	 */
 	@Column(name = "status", nullable = false)
 	private Integer status = 1;
 	
+	/**
+	 * See {@link RoleTypeEnum}
+	 */
 	@Column(name = "role_type_enum", insertable = false, updatable = false)
     private Integer roleType;
 	

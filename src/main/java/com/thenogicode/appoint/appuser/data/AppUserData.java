@@ -15,7 +15,8 @@ public class AppUserData {
 	private String username;
 	private String firstname;
 	private String lastname;
-	private String status;
+	private Integer statusTypeId;
+	private String statusDisplayText;
 	private String role;
 	private List<EventData> events;
 }
