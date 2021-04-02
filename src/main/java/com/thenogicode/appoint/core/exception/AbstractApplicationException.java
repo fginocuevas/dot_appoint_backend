@@ -8,6 +8,7 @@ public abstract class AbstractApplicationException extends RuntimeException {
 	
 	protected AbstractApplicationException(final String defaultUserMessage,
             final Object... defaultUserMessageArgs) {
+		super(defaultUserMessage);
         this.defaultUserMessage = defaultUserMessage;
         this.defaultUserMessageArgs = defaultUserMessageArgs;
     }

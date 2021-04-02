@@ -9,7 +9,7 @@ import com.thenogicode.appoint.appuser.domain.SchedulerAppUser;
 import com.thenogicode.appoint.appuser.repository.AppUserRepository;
 import com.thenogicode.appoint.appuser.service.AppUserService;
 import com.thenogicode.appoint.core.appuser.utils.AppUserConstants;
-import com.thenogicode.appoint.util.AdapterUtils;
+import com.thenogicode.appoint.util.EntityAdapterHelper;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -30,7 +30,7 @@ public class AppUserServiceImpl implements AppUserService {
 			return null;
 		}
 		
-		return AdapterUtils.generateAppUserDataFrom(appUser);
+		return EntityAdapterHelper.generateAppUserDataFrom(appUser);
 	}
 	
 	@Override
@@ -38,7 +38,7 @@ public class AppUserServiceImpl implements AppUserService {
 		// Workaround for discriminator value not persisting right after create
 		appUser.setRoleType(AppUserConstants.DISCRIMINATOR_VALUE_SCHEDULER);
 		SchedulerAppUser createdAppUser= appUserRepository.saveAndFlush(appUser);
-		return AdapterUtils.generateAppUserDataFrom(createdAppUser);
+		return EntityAdapterHelper.generateAppUserDataFrom(createdAppUser);
 	}
 
 	@Override
@@ -46,7 +46,7 @@ public class AppUserServiceImpl implements AppUserService {
 		// Workaround for discriminator value not persisting right after create
 		appUser.setRoleType(AppUserConstants.DISCRIMINATOR_VALUE_DOCTOR);
 		DoctorAppUser createdAppUser= appUserRepository.saveAndFlush(appUser);
-		return AdapterUtils.generateAppUserDataFrom(createdAppUser);
+		return EntityAdapterHelper.generateAppUserDataFrom(createdAppUser);
 	}
 
 	

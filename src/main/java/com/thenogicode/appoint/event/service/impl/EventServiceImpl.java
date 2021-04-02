@@ -1,7 +1,9 @@
 package com.thenogicode.appoint.event.service.impl;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +17,7 @@ import com.thenogicode.appoint.appuser.repository.AppUserRepository;
 import com.thenogicode.appoint.core.appuser.utils.EventConstants;
 import com.thenogicode.appoint.core.exception.DataNotFoundException;
 import com.thenogicode.appoint.core.exception.DoctorUnableToAcceptEventException;
+import com.thenogicode.appoint.core.exception.GenericEventScheduleException;
 import com.thenogicode.appoint.core.exception.MaxExceedAcceptedAppointmentPerDayException;
 import com.thenogicode.appoint.core.exception.MaxExceedAppointmentPerDayException;
 import com.thenogicode.appoint.event.api.request.AcceptEventRequest;
@@ -23,7 +26,8 @@ import com.thenogicode.appoint.event.data.EventData;
 import com.thenogicode.appoint.event.domain.Event;
 import com.thenogicode.appoint.event.repository.EventRepository;
 import com.thenogicode.appoint.event.service.EventService;
-import com.thenogicode.appoint.util.AdapterUtils;
+import com.thenogicode.appoint.util.DateHelper;
+import com.thenogicode.appoint.util.EntityAdapterHelper;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -50,7 +54,7 @@ public class EventServiceImpl implements EventService {
 			events= eventRepository.retrieveAllByRangeAndDoctorId(startDateLocal, endDateLocal, doctorId);
 		}
 		
-		return events.stream().map(AdapterUtils::generateEventDateFrom)
+		return events.stream().map(EntityAdapterHelper::generateEventDateFrom)
 					.collect(Collectors.toList());
 	}
 
@@ -64,6 +68,7 @@ public class EventServiceImpl implements EventService {
 										.orElseThrow(()-> new DataNotFoundException("scheduler", request.getSchedulerId().toString()));
 		
 		validateMaxAppointmentPerDay(request.getEventDate());
+		validateEventWithinDaySchedule(request);
 		
 		Event event= generatedNewEventFrom(request, doctor, scheduler);
 		
@@ -98,12 +103,6 @@ public class EventServiceImpl implements EventService {
 		Event event= eventRepository.findById(targetEventId)
 				.orElseThrow(() -> new DataNotFoundException("event",targetEventId.toString()));
 		
-		/*
-		 * The entire system should only accept a maximum of 5 appointments per day 
-		 * The system should only allow a doctor to have 3 maximum number of approve 
-		 * appointments per day
-		 */
-		
 		validateMaxAppointmentPerDay(event.getEventDate());
 		validateRequestDoctorInEvent(event, targetDoctorId);
 		validateMaxAcceptedAppointmentForDoctorPerDay(event.getEventDate(), targetDoctorId);
@@ -115,7 +114,7 @@ public class EventServiceImpl implements EventService {
 		
 		event= eventRepository.save(event);
 		
-		return AdapterUtils.generateEventDateFrom(event);
+		return EntityAdapterHelper.generateEventDateFrom(event);
 		
 	}
 
@@ -159,6 +158,38 @@ public class EventServiceImpl implements EventService {
 					EventConstants.MAX_ACCEPTED_APPOINTMENT_PER_DAY,
 					doctorId);
 			throw new MaxExceedAcceptedAppointmentPerDayException(date, doctorId);
+		}
+		
+	}
+
+	/**
+	 * 
+	 * Validates if appointment within 9:00AM to 5:00PM Monday-Saturday
+	 * 
+	 * @param request
+	 */
+	private void validateEventWithinDaySchedule(CreateEventRequest request) {
+		
+		DayOfWeek day= request.getEventDate().getDayOfWeek();
+		
+		// Check if event date is within Monday - Saturday
+		if(day.equals(DayOfWeek.SUNDAY)) {
+			throw new GenericEventScheduleException("Event not allowed to be schedule on a Sunday");
+		}
+		
+		LocalTime startTime= request.getStartTime();
+		LocalTime endTime= request.getEndTime();
+		
+		// Check if endTime is after startTime
+		if(!endTime.isAfter(startTime)) {
+			throw new GenericEventScheduleException("End time " + endTime.toString()
+					+ " must be after startTime " + startTime.toString());
+		}		
+		
+		// Check if start and end time within allow schedule
+		if(DateHelper.isTimeNotWithinAllowTimePeriod(startTime)
+				|| DateHelper.isTimeNotWithinAllowTimePeriod(endTime)) {
+			throw new GenericEventScheduleException("Event must be scheduled with 9:00AM to 5:00PM");
 		}
 		
 	}
