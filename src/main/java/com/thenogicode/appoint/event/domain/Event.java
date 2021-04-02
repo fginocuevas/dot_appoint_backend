@@ -51,4 +51,11 @@ public class Event extends AbstractPersistableCustom<Long>{
 	@JoinColumn(name="created_by", nullable= false)
 	private SchedulerAppUser createdBy;
 	
+	@Builder.Default
+	@Column(name = "is_accepted", nullable= false, columnDefinition = "BOOLEAN DEFAULT FALSE")
+	private boolean accepted = false;
+	
+	@Column(name = "accepted_date_time")
+	private LocalDateTime acceptedDateTime;
+	
 }

@@ -46,12 +46,15 @@ public class AdapterUtils {
 	
 	public static EventData generateEventDateFrom(Event event) {
 		return EventData.builder()
+				.id(event.getId())
 				.eventDate(event.getEventDate())
 				.startTime(event.getStartTime())
 				.endTime(event.getEndTime())
 				.assignedTo(event.getAssignedTo().getUserDisplayName())
 				.creationDateTime(event.getCreationDateTime())
 				.createdBy(event.getCreatedBy().getUserDisplayName())
+				.isAccepted(event.isAccepted())
+				.acceptedDateTime(event.getAcceptedDateTime())
 				.build();
 	}
 	

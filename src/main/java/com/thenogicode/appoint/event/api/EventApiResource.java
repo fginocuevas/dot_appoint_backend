@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.thenogicode.appoint.event.api.request.AcceptEventRequest;
 import com.thenogicode.appoint.event.api.request.CreateEventRequest;
 import com.thenogicode.appoint.event.data.EventData;
 import com.thenogicode.appoint.event.service.EventService;
@@ -28,6 +29,13 @@ public class EventApiResource {
 			produces= MediaType.APPLICATION_JSON_VALUE)
 	public EventData createNewEvent(@RequestBody final CreateEventRequest request) {
 		return eventService.createNewEvent(request);
+	}
+	
+	@PostMapping(value="/accept",
+			consumes= MediaType.APPLICATION_JSON_VALUE, 
+			produces= MediaType.APPLICATION_JSON_VALUE)
+	public EventData acceptedEvent(@RequestBody final AcceptEventRequest request) {
+		return eventService.acceptEvent(request);
 	}
 	
 	@GetMapping(value="/retrieveByDateRange",
