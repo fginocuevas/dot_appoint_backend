@@ -3,6 +3,7 @@ package com.thenogicode.appoint.event.api;
 import java.util.List;
 
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -60,6 +61,12 @@ public class EventApiResource {
 			@RequestParam(name = "endDate")  String endDate, 
 			@RequestParam(name = "doctorId")  Long doctorId){
 		return eventService.retrieveByRange(startDate, endDate, doctorId);
+	}
+	
+	@GetMapping(value="/delete/{id}", produces= MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> deleteAnEvent(@PathVariable final Long id){
+		eventService.deleteEvent(id);
+		return ResponseEntity.ok(null);
 	}
 
 }
