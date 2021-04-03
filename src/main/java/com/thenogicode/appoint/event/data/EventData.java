@@ -1,9 +1,5 @@
 package com.thenogicode.appoint.event.data;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-
 import lombok.Builder;
 import lombok.Data;
 
@@ -12,12 +8,12 @@ import lombok.Data;
 public class EventData {
 	private Long id;
 	private String patientName;
-	private LocalDate eventDate;
-	private LocalTime startTime;
-	private LocalTime endTime;
+	private String eventDate;
+	private String startTime;
+	private String endTime;
 	private String assignedTo;
-	private LocalDateTime creationDateTime;
+	private String creationDateTime;
 	private String createdBy;
 	private boolean isAccepted;
-	private LocalDateTime acceptedDateTime;
+	private String acceptedDateTime;
 }

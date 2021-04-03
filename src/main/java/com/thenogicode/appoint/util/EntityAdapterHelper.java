@@ -49,14 +49,14 @@ public class EntityAdapterHelper {
 		return EventData.builder()
 				.id(event.getId())
 				.patientName(event.getPatientName())
-				.eventDate(event.getEventDate())
-				.startTime(event.getStartTime())
-				.endTime(event.getEndTime())
+				.eventDate(event.getEventDate().toString())
+				.startTime(event.getStartTime().toString())
+				.endTime(event.getEndTime().toString())
 				.assignedTo(event.getAssignedTo().getUserDisplayName())
-				.creationDateTime(event.getCreationDateTime())
+				.creationDateTime(event.getCreationDateTime().toString())
 				.createdBy(event.getCreatedBy().getUserDisplayName())
 				.isAccepted(event.isAccepted())
-				.acceptedDateTime(event.getAcceptedDateTime())
+				.acceptedDateTime(event.getAcceptedDateTime()!= null? event.getAcceptedDateTime().toString(): null)
 				.build();
 	}
 	

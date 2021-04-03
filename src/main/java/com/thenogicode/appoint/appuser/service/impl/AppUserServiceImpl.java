@@ -1,10 +1,14 @@
 package com.thenogicode.appoint.appuser.service.impl;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
 
 import com.thenogicode.appoint.appuser.data.AppUserData;
 import com.thenogicode.appoint.appuser.domain.AppUser;
 import com.thenogicode.appoint.appuser.domain.DoctorAppUser;
+import com.thenogicode.appoint.appuser.domain.RoleTypeEnum;
 import com.thenogicode.appoint.appuser.domain.SchedulerAppUser;
 import com.thenogicode.appoint.appuser.domain.StatusTypeEnum;
 import com.thenogicode.appoint.appuser.repository.AppUserRepository;
@@ -35,6 +39,15 @@ public class AppUserServiceImpl implements AppUserService {
 		}
 		
 		return EntityAdapterHelper.generateAppUserDataFrom(appUser);
+	}
+	
+	@Override
+	public List<AppUserData> retrieveAllDoctors(boolean onlyActive) {
+		
+		List<DoctorAppUser> doctors= appUserRepository.findAllByRoleType(RoleTypeEnum.DOCTOR.getValue());
+		
+		return doctors.stream().map(doctor -> EntityAdapterHelper.generateAppUserDataFrom(doctor))
+				.collect(Collectors.toList());
 	}
 	
 	@Override

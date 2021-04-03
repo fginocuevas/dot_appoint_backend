@@ -84,11 +84,11 @@ public class EventServiceImpl implements EventService {
 		return EventData.builder()
 				.id(createdEvent.getId())
 				.patientName(createdEvent.getPatientName())
-				.eventDate(createdEvent.getEventDate())
-				.startTime(createdEvent.getStartTime())
-				.endTime(createdEvent.getEndTime())
+				.eventDate(createdEvent.getEventDate().toString())
+				.startTime(createdEvent.getStartTime().toString())
+				.endTime(createdEvent.getEndTime().toString())
 				.assignedTo(createdEvent.getAssignedTo().getUserDisplayName())
-				.creationDateTime(createdEvent.getCreationDateTime())
+				.creationDateTime(createdEvent.getCreationDateTime().toString())
 				.createdBy(createdEvent.getCreatedBy().getUserDisplayName())
 				.build();
 	}

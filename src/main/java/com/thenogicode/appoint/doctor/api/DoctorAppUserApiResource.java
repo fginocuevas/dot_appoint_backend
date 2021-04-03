@@ -1,6 +1,9 @@
 package com.thenogicode.appoint.doctor.api;
 
+import java.util.List;
+
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,6 +36,11 @@ public class DoctorAppUserApiResource {
 			produces= MediaType.APPLICATION_JSON_VALUE)
 	public AppUserData updateDoctorStatus(@RequestBody UpdateDoctorStatusRequest request) {
 		return appUserService.updateDoctorStatus(request);
+	}
+	
+	@GetMapping(value="/retrieveAll")
+	public List<AppUserData> retrieveAllDoctors(){
+		return appUserService.retrieveAllDoctors(true);
 	}
 	
 }
