@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,6 +37,11 @@ public class EventApiResource {
 			produces= MediaType.APPLICATION_JSON_VALUE)
 	public EventData acceptedEvent(@RequestBody final AcceptEventRequest request) {
 		return eventService.acceptEvent(request);
+	}
+	
+	@GetMapping(value="/retrieve/{id}", produces= MediaType.APPLICATION_JSON_VALUE)
+	public EventData retrieveOne(@PathVariable final Long id) {
+		return eventService.retrieveOne(id);
 	}
 	
 	@GetMapping(value="/retrieveByDateRange",

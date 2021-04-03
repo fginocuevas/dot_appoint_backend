@@ -41,7 +41,15 @@ public class EventServiceImpl implements EventService {
 	private final EventRepository eventRepository;
 	private final AppUserRepository appUserRepository;
 	private final EmailService emailService;
-
+	
+	@Override
+	public EventData retrieveOne(Long id) {
+		Event event= eventRepository.findById(id)
+				.orElseThrow(() -> new DataNotFoundException("event", id.toString()));
+		
+		return EntityAdapterHelper.generateEventDateFrom(event);
+	}
+	
 	@Override
 	public List<EventData> retrieveByRange(String startDate, String endDate, Long doctorId) {
 		
@@ -214,4 +222,5 @@ public class EventServiceImpl implements EventService {
 				.createdBy(scheduler)
 				.build();
 	}
+
 }
