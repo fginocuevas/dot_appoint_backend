@@ -1,5 +1,7 @@
 package com.thenogicode.appoint.appuser.domain;
 
+import java.util.Collection;
+
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
@@ -10,11 +12,15 @@ import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import com.thenogicode.appoint.core.domain.AbstractPersistableCustom;
 
 import lombok.Getter;
 import lombok.Setter;
 
+@SuppressWarnings("serial")
 @Entity
 @Getter
 @Setter
@@ -25,7 +31,7 @@ import lombok.Setter;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "role_type_enum", discriminatorType = DiscriminatorType.INTEGER)
 @DiscriminatorValue("0")
-public abstract class AppUser extends AbstractPersistableCustom<Long> {
+public abstract class AppUser extends AbstractPersistableCustom<Long> implements UserDetails{
 	
 	@Column(name = "email", unique= true, nullable = false, length = 100)
     private String email;
@@ -58,6 +64,36 @@ public abstract class AppUser extends AbstractPersistableCustom<Long> {
 	
 	public String getUserDisplayName() {
 		return this.getFirstname().concat(" ").concat(getLastname());
+	}
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }
