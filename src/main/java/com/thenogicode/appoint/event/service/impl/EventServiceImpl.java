@@ -89,16 +89,7 @@ public class EventServiceImpl implements EventService {
 			emailService.sendNotificationEmailForAppointmentCreated(createdEvent, doctor);
 		}
 		
-		return EventData.builder()
-				.id(createdEvent.getId())
-				.patientName(createdEvent.getPatientName())
-				.eventDate(createdEvent.getEventDate().toString())
-				.startTime(createdEvent.getStartTime().toString())
-				.endTime(createdEvent.getEndTime().toString())
-				.assignedTo(createdEvent.getAssignedTo().getUserDisplayName())
-				.creationDateTime(createdEvent.getCreationDateTime().toString())
-				.createdBy(createdEvent.getCreatedBy().getUserDisplayName())
-				.build();
+		return EntityAdapterHelper.generateEventDateFrom(createdEvent);
 	}
 
 	@Override
@@ -136,7 +127,9 @@ public class EventServiceImpl implements EventService {
 	}
 
 	private void validateRequestDoctorInEvent(Event event, Long targetDoctorId) {
-		if(event.getAssignedTo().getId().equals(targetDoctorId)) {
+		if(!event.getAssignedTo().getId().equals(targetDoctorId)) {
+			log.info("Event assigned doctor id " + event.getAssignedTo().getId()
+					+ " is not the same as requesting doctor id " + targetDoctorId);
 			throw new DoctorUnableToAcceptEventException(targetDoctorId);
 		}
 	}

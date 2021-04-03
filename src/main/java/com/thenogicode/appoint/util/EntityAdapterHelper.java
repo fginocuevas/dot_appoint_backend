@@ -53,6 +53,7 @@ public class EntityAdapterHelper {
 				.startTime(event.getStartTime().toString())
 				.endTime(event.getEndTime().toString())
 				.assignedTo(event.getAssignedTo().getUserDisplayName())
+				.doctorId(event.getAssignedTo().getId())
 				.creationDateTime(event.getCreationDateTime().toString())
 				.createdBy(event.getCreatedBy().getUserDisplayName())
 				.isAccepted(event.isAccepted())
