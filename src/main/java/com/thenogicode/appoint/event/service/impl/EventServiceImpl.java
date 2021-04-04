@@ -286,4 +286,11 @@ public class EventServiceImpl implements EventService {
 				.collect(Collectors.toList());
 	}
 
+	@Override
+	public List<EventData> retrieveAllEventsByDoctor(Long id) {
+		List<Event> allEvents = eventRepository.findByAssignedToIdOrderByEventDate(id);
+		return allEvents.stream().map(EntityAdapterHelper::generateEventDateFrom)
+				.collect(Collectors.toList());
+	}
+
 }

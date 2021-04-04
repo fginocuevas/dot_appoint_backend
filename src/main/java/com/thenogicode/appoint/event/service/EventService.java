@@ -19,5 +19,6 @@ public interface EventService {
 	public List<EventData> retrieveByRange(String startDate, String endDate, Long doctorId);
 	public EventData retrieveOne(Long id);
 	public List<EventData> retrieveAllEvents();
+	public List<EventData> retrieveAllEventsByDoctor(Long id);
 	
 }

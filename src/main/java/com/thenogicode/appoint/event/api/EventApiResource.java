@@ -62,6 +62,12 @@ public class EventApiResource {
 		return eventService.retrieveAllEvents();
 	}
 	
+	@GetMapping(value="/retrieveAllByDoctor/{id}",
+			produces= MediaType.APPLICATION_JSON_VALUE)
+	public List<EventData> retrieveAllEventsByDoctor(@PathVariable final Long id){
+		return eventService.retrieveAllEventsByDoctor(id);
+	}
+	
 	@GetMapping(value="/retrieveByDateRangeAndDoctor",
 			consumes= MediaType.APPLICATION_JSON_VALUE, 
 			produces= MediaType.APPLICATION_JSON_VALUE)
