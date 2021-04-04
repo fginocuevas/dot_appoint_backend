@@ -11,6 +11,7 @@ import com.thenogicode.appoint.appuser.domain.StatusTypeEnum;
 import com.thenogicode.appoint.event.data.EventData;
 import com.thenogicode.appoint.event.domain.Event;
 
+import io.micrometer.core.instrument.util.StringUtils;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -53,6 +54,7 @@ public class EntityAdapterHelper {
 				.eventDate(event.getEventDate().toString())
 				.startTime(event.getStartTime().toString())
 				.endTime(event.getEndTime().toString())
+				.comments(StringUtils.isNotBlank(event.getComments())? event.getComments(): "")
 				.assignedTo(event.getAssignedTo().getUserDisplayName())
 				.doctorId(event.getAssignedTo().getId())
 				.creationDateTime(event.getCreationDateTime().toString())

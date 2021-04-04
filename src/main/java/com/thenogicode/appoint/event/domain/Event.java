@@ -43,6 +43,9 @@ public class Event extends AbstractPersistableCustom<Long>{
 	@Column(name = "end_time", nullable= false)
 	private LocalTime endTime;
 	
+	@Column(name = "comments", nullable= true)
+	private String comments;
+	
 	@ManyToOne
 	@JoinColumn(name="assigned_to", nullable= false)
 	private DoctorAppUser assignedTo;

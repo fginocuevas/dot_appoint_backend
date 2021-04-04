@@ -13,4 +13,5 @@ public class CreateEventRequest {
 	private LocalTime endTime;
 	private Long assignedDoctorId;
 	private Long schedulerId;
+	private String comments;
 }

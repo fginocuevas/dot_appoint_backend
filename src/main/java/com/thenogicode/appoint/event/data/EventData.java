@@ -11,6 +11,7 @@ public class EventData {
 	private String eventDate;
 	private String startTime;
 	private String endTime;
+	private String comments;
 	private Long doctorId;
 	private String assignedTo;
 	private String creationDateTime;

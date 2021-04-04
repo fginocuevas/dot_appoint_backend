@@ -153,7 +153,7 @@ public class EventServiceImpl implements EventService {
 
 	/**
 	 * 
-	 * Validate if system has reached max appointments created for the day
+	 * Validate if system has reached max accepted appointments for the day
 	 * {@link EventConstants#MAX_ACCEPTED_APPOINTMENT_PER_DAY}
 	 * 
 	 * @param date
@@ -199,7 +199,7 @@ public class EventServiceImpl implements EventService {
 		// Check if start and end time within allow schedule
 		if(DateHelper.isTimeNotWithinAllowTimePeriod(startTime)
 				|| DateHelper.isTimeNotWithinAllowTimePeriod(endTime)) {
-			throw new GenericEventScheduleException("Event must be scheduled with 9:00AM to 5:00PM");
+			throw new GenericEventScheduleException("Event must be scheduled within 9:00AM to 5:00PM");
 		}
 		
 	}
@@ -210,6 +210,7 @@ public class EventServiceImpl implements EventService {
 				.eventDate(request.getEventDate())
 				.startTime(request.getStartTime())
 				.endTime(request.getEndTime())
+				.comments(request.getComments())
 				.assignedTo(doctor)
 				.creationDateTime(LocalDateTime.now())
 				.createdBy(scheduler)
