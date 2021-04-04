@@ -75,7 +75,9 @@ http://localhost:8080/doctor/create
 
 ## Usage
 
+### Authorization issues during login
 
+If you are encountering authorization/token issues during login, please refresh the page or try emptying the cache.
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
