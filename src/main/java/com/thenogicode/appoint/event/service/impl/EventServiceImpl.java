@@ -126,7 +126,6 @@ public class EventServiceImpl implements EventService {
 		Event event= eventRepository.findById(targetEventId)
 				.orElseThrow(() -> new DataNotFoundException("event",targetEventId.toString()));
 		
-		validateMaxAppointmentPerDay(event.getEventDate(), null);
 		validateRequestDoctorInEvent(event, targetDoctorId);
 		validateMaxAcceptedAppointmentForDoctorPerDay(event.getEventDate(), targetDoctorId);
 		
