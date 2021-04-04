@@ -59,9 +59,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		// .cors().and()
 		httpSecurity.cors().and().csrf().disable().headers().frameOptions().deny().and()
 				// dont authenticate this particular request
-				.authorizeRequests().antMatchers("/authenticate").permitAll().
+				.authorizeRequests().antMatchers("/authenticate").permitAll()
+				.and().authorizeRequests().antMatchers("/scheduler/create/**").permitAll()
+				.and().authorizeRequests().antMatchers("/doctor/create/**").permitAll()
 				// all other requests need to be authenticated
-				anyRequest().authenticated().and().
+				.anyRequest().authenticated().and().
 				// make sure we use stateless session; session won't be used to
 				// store user's state.
 				exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()
