@@ -39,6 +39,7 @@ public class EntityAdapterHelper {
 				.statusTypeId(user.getStatus())
 				.statusDisplayText(StatusTypeEnum.fromInt(user.getStatus()).getDisplayText())
 				.role(RoleTypeEnum.fromInt(user.getRoleType()).getDisplayText())
+				.roleTypeId(user.getRoleType())
 				.events(events == null? null : events.stream().map((e) -> generateEventDateFrom(e))
 						.collect(Collectors.toList()))
 				.build();

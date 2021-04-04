@@ -35,8 +35,16 @@ public class AppUserServiceImpl implements AppUserService {
 		
 		if(appUser == null) {
 			log.error("Failed to retrieve app user with id {}", id);
-			return null;
+			throw new DataNotFoundException("appuserid", id.toString());
 		}
+		
+		return EntityAdapterHelper.generateAppUserDataFrom(appUser);
+	}
+	
+	@Override
+	public AppUserData retrieveAppUserByUsername(String username) {
+		AppUser appUser= appUserRepository.findByUsername(username)
+				.orElseThrow(() -> new DataNotFoundException("appuser", username));
 		
 		return EntityAdapterHelper.generateAppUserDataFrom(appUser);
 	}

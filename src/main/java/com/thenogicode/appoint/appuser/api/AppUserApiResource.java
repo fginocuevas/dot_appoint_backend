@@ -25,5 +25,10 @@ public class AppUserApiResource {
 	public AppUserData retrieveOne(@PathVariable final Long id) {
 		return appUserService.retrieveAppUser(id);
 	}
+	
+	@GetMapping(value="/username/{username}", produces= MediaType.APPLICATION_JSON_VALUE)
+	public AppUserData retrieveOne(@PathVariable final String username) {
+		return appUserService.retrieveAppUserByUsername(username);
+	}
 
 }

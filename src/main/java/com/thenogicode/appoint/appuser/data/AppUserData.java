@@ -18,5 +18,6 @@ public class AppUserData {
 	private Integer statusTypeId;
 	private String statusDisplayText;
 	private String role;
+	private Integer roleTypeId;
 	private List<EventData> events;
 }

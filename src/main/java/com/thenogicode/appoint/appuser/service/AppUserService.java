@@ -10,6 +10,7 @@ import com.thenogicode.appoint.doctor.api.request.UpdateDoctorStatusRequest;
 public interface AppUserService {
 	
 	public AppUserData retrieveAppUser(Long id);
+	public AppUserData retrieveAppUserByUsername(String username);
 	
 	public AppUserData createNewDoctor(DoctorAppUser appUser);
 	public AppUserData createNewScheduler(SchedulerAppUser appUser);
