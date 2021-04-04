@@ -6,11 +6,13 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.sun.xml.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
 import com.thenogicode.appoint.appuser.domain.DoctorAppUser;
 import com.thenogicode.appoint.appuser.domain.SchedulerAppUser;
 import com.thenogicode.appoint.appuser.repository.AppUserRepository;
@@ -23,6 +25,7 @@ import com.thenogicode.appoint.core.utils.EventConstants;
 import com.thenogicode.appoint.email.service.EmailService;
 import com.thenogicode.appoint.event.api.request.AcceptEventRequest;
 import com.thenogicode.appoint.event.api.request.CreateEventRequest;
+import com.thenogicode.appoint.event.api.request.EditEventRequest;
 import com.thenogicode.appoint.event.data.EventData;
 import com.thenogicode.appoint.event.domain.Event;
 import com.thenogicode.appoint.event.repository.EventRepository;
@@ -77,7 +80,7 @@ public class EventServiceImpl implements EventService {
 		SchedulerAppUser scheduler= (SchedulerAppUser) appUserRepository.findById(request.getSchedulerId())
 										.orElseThrow(()-> new DataNotFoundException("scheduler", request.getSchedulerId().toString()));
 		
-		validateMaxAppointmentPerDay(request.getEventDate());
+		validateMaxAppointmentPerDay(request.getEventDate(), null);
 		validateEventWithinDaySchedule(request);
 		
 		Event event= generatedNewEventFrom(request, doctor, scheduler);
@@ -91,10 +94,22 @@ public class EventServiceImpl implements EventService {
 		
 		return EntityAdapterHelper.generateEventDateFrom(createdEvent);
 	}
-
+	
 	@Override
-	public EventData editEvent(Event event) {
-		return null;
+	public EventData editEvent(EditEventRequest request) {
+		
+		Event event= eventRepository.findById(request.getId())
+				.orElseThrow(() -> new DataNotFoundException("event", request.getId().toString())); 
+		
+		validateMaxAppointmentPerDay(request.getEventDate(), request.getId());
+		validateEventWithinDaySchedule(request);
+		
+		EntityAdapterHelper.makeEventChanges(event, request);
+		
+		Event editedEvent= eventRepository.saveAndFlush(event);
+		
+		return EntityAdapterHelper.generateEventDateFrom(editedEvent);
+		
 	}
 
 	@Override
@@ -111,7 +126,7 @@ public class EventServiceImpl implements EventService {
 		Event event= eventRepository.findById(targetEventId)
 				.orElseThrow(() -> new DataNotFoundException("event",targetEventId.toString()));
 		
-		validateMaxAppointmentPerDay(event.getEventDate());
+		validateMaxAppointmentPerDay(event.getEventDate(), null);
 		validateRequestDoctorInEvent(event, targetDoctorId);
 		validateMaxAcceptedAppointmentForDoctorPerDay(event.getEventDate(), targetDoctorId);
 		
@@ -141,16 +156,28 @@ public class EventServiceImpl implements EventService {
 	 * 
 	 * @param date
 	 */
-	private void validateMaxAppointmentPerDay(LocalDate date) {
+	private void validateMaxAppointmentPerDay(LocalDate date, Long eventId) {
 		
 		List<Event> allEventsForTheDay= eventRepository.retrieveAllByDate(date);
+		List<Event> finalListOfEvents= null;
 		
-		if(allEventsForTheDay.size() >= EventConstants.MAX_APPOINTMENTS_PER_DAY) {
+		
+		if(null != eventId) {
+			
+			// Handling when edit event, will not include the eventId being edited
+			finalListOfEvents = allEventsForTheDay.stream()
+					.filter(e -> ( !e.getId().equals(eventId)))
+					.collect(Collectors.toList());
+		} else {
+			finalListOfEvents = allEventsForTheDay;
+		}
+		
+		if(finalListOfEvents.size() >= EventConstants.MAX_APPOINTMENTS_PER_DAY) {
 			log.info("Exceeded max appointments per day of {}", EventConstants.MAX_APPOINTMENTS_PER_DAY);
 			throw new MaxExceedAppointmentPerDayException(date);
 		}
 	}
-
+	
 	/**
 	 * 
 	 * Validate if system has reached max accepted appointments for the day
@@ -203,6 +230,41 @@ public class EventServiceImpl implements EventService {
 		}
 		
 	}
+	
+	/**
+	 * 
+	 * TODO Update Create and EditEventRequest in the future to improve reusability
+	 * for this function
+	 * 
+	 * Validates if appointment within 9:00AM to 5:00PM Monday-Saturday
+	 * 
+	 * @param request
+	 */
+	private void validateEventWithinDaySchedule(EditEventRequest request) {
+		
+		DayOfWeek day= request.getEventDate().getDayOfWeek();
+		
+		// Check if event date is within Monday - Saturday
+		if(day.equals(DayOfWeek.SUNDAY)) {
+			throw new GenericEventScheduleException("Event not allowed to be schedule on a Sunday");
+		}
+		
+		LocalTime startTime= request.getStartTime();
+		LocalTime endTime= request.getEndTime();
+		
+		// Check if endTime is after startTime
+		if(!endTime.isAfter(startTime)) {
+			throw new GenericEventScheduleException("End time " + endTime.toString()
+					+ " must be after startTime " + startTime.toString());
+		}		
+		
+		// Check if start and end time within allow schedule
+		if(DateHelper.isTimeNotWithinAllowTimePeriod(startTime)
+				|| DateHelper.isTimeNotWithinAllowTimePeriod(endTime)) {
+			throw new GenericEventScheduleException("Event must be scheduled within 9:00AM to 5:00PM");
+		}
+		
+	}
 
 	private Event generatedNewEventFrom(CreateEventRequest request, DoctorAppUser doctor, SchedulerAppUser scheduler) {
 		return Event.builder()
@@ -215,6 +277,13 @@ public class EventServiceImpl implements EventService {
 				.creationDateTime(LocalDateTime.now())
 				.createdBy(scheduler)
 				.build();
+	}
+
+	@Override
+	public List<EventData> retrieveAllEvents() {
+		List<Event> allEvents = eventRepository.findByOrderByEventDate();
+		return allEvents.stream().map(EntityAdapterHelper::generateEventDateFrom)
+				.collect(Collectors.toList());
 	}
 
 }

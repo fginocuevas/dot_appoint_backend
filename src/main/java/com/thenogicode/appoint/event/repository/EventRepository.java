@@ -24,7 +24,7 @@ public interface EventRepository extends JpaRepository<Event, Long>{
 	@Query(value= "SELECT e FROM Event e "
 			+ " WHERE e.assignedTo.id = :doctorId "
 			+ " AND (e.eventDate = :onDate) "
-			+ " ORDER BY e.eventDate DESC")
+			+ " ORDER BY e.eventDate ASC")
 	List<Event>retrieveAllByDateAndDoctorId(@Param("onDate") LocalDate onDate, 
 			@Param("doctorId")Long doctorId);
 	
@@ -32,22 +32,24 @@ public interface EventRepository extends JpaRepository<Event, Long>{
 			+ " WHERE e.assignedTo.id = :doctorId "
 			+ " AND (e.eventDate = :onDate) "
 			+ " AND (e.accepted = true) "
-			+ " ORDER BY e.eventDate DESC")
+			+ " ORDER BY e.eventDate ASC")
 	List<Event>retrieveAcceptedByDateAndDoctorId(@Param("onDate") LocalDate onDate, 
 			@Param("doctorId")Long doctorId);
 
 	@Query(value= "SELECT e FROM Event e "
 			+ " WHERE e.eventDate >= :startDate AND e.eventDate <= :endDate "
-			+ " ORDER BY e.eventDate DESC ")
+			+ " ORDER BY e.eventDate ASC ")
 	List<Event>retrieveAllByRange(@Param("startDate") LocalDate startDate, 
 			@Param("endDate")LocalDate endDate);
 	
 	@Query(value= "SELECT e FROM Event e "
 			+ " WHERE e.assignedTo.id = :doctorId "
 			+ " AND (e.eventDate >= :startDate AND e.eventDate <= :endDate) "
-			+ " ORDER BY e.eventDate DESC")
+			+ " ORDER BY e.eventDate ASC")
 	List<Event>retrieveAllByRangeAndDoctorId(@Param("startDate") LocalDate startDate, 
 			@Param("endDate")LocalDate endDate, @Param("doctorId")Long doctorId);
+
+	List<Event> findByOrderByEventDate();
 
 	
 	

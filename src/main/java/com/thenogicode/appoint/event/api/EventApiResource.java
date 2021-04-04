@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.thenogicode.appoint.event.api.request.AcceptEventRequest;
 import com.thenogicode.appoint.event.api.request.CreateEventRequest;
+import com.thenogicode.appoint.event.api.request.EditEventRequest;
 import com.thenogicode.appoint.event.data.EventData;
 import com.thenogicode.appoint.event.service.EventService;
 
@@ -53,6 +55,13 @@ public class EventApiResource {
 		return eventService.retrieveByRange(startDate, endDate, null);
 	}
 	
+	@GetMapping(value="/retrieveAll",
+			consumes= MediaType.APPLICATION_JSON_VALUE, 
+			produces= MediaType.APPLICATION_JSON_VALUE)
+	public List<EventData> retrieveAllEvents(){
+		return eventService.retrieveAllEvents();
+	}
+	
 	@GetMapping(value="/retrieveByDateRangeAndDoctor",
 			consumes= MediaType.APPLICATION_JSON_VALUE, 
 			produces= MediaType.APPLICATION_JSON_VALUE)
@@ -61,6 +70,13 @@ public class EventApiResource {
 			@RequestParam(name = "endDate")  String endDate, 
 			@RequestParam(name = "doctorId")  Long doctorId){
 		return eventService.retrieveByRange(startDate, endDate, doctorId);
+	}
+	
+	@PutMapping(value="/edit",
+			consumes= MediaType.APPLICATION_JSON_VALUE, 
+			produces= MediaType.APPLICATION_JSON_VALUE)
+	public EventData editEvent(@RequestBody final EditEventRequest request) {
+		return eventService.editEvent(request);
 	}
 	
 	@GetMapping(value="/delete/{id}", produces= MediaType.APPLICATION_JSON_VALUE)

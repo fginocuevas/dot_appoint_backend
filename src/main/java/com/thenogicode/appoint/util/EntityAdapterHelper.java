@@ -8,6 +8,7 @@ import com.thenogicode.appoint.appuser.domain.AppUser;
 import com.thenogicode.appoint.appuser.domain.DoctorAppUser;
 import com.thenogicode.appoint.appuser.domain.RoleTypeEnum;
 import com.thenogicode.appoint.appuser.domain.StatusTypeEnum;
+import com.thenogicode.appoint.event.api.request.EditEventRequest;
 import com.thenogicode.appoint.event.data.EventData;
 import com.thenogicode.appoint.event.domain.Event;
 
@@ -62,6 +63,32 @@ public class EntityAdapterHelper {
 				.isAccepted(event.isAccepted())
 				.acceptedDateTime(event.getAcceptedDateTime()!= null? event.getAcceptedDateTime().toString(): null)
 				.build();
+	}
+	
+	public static void makeEventChanges(Event event, EditEventRequest request) {
+		//TODO Better to implement checking if there were changes made
+		// before setting the changes
+		
+		if(StringUtils.isNotBlank(request.getPatientName())) {
+			event.setPatientName(request.getPatientName());
+		}
+		
+		if(request.getEventDate() != null) {
+			event.setEventDate(request.getEventDate());
+		}
+		
+		if(request.getStartTime() != null) {
+			event.setStartTime(request.getStartTime());
+		}
+		
+		if(request.getEndTime() != null) {
+			event.setEndTime(request.getEndTime());
+		}
+		
+		if(StringUtils.isNotBlank(request.getComments())) {
+			event.setComments(request.getComments());
+		}
+		
 	}
 	
 }
