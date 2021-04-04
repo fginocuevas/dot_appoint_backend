@@ -11,6 +11,8 @@ import com.thenogicode.appoint.appuser.domain.StatusTypeEnum;
 import com.thenogicode.appoint.event.api.request.EditEventRequest;
 import com.thenogicode.appoint.event.data.EventData;
 import com.thenogicode.appoint.event.domain.Event;
+import com.thenogicode.appoint.template.data.RoleTypeData;
+import com.thenogicode.appoint.template.data.StatusTypeData;
 
 import io.micrometer.core.instrument.util.StringUtils;
 import lombok.extern.log4j.Log4j2;
@@ -89,6 +91,20 @@ public class EntityAdapterHelper {
 			event.setComments(request.getComments());
 		}
 		
+	}
+	
+	public static RoleTypeData generateRoleTypeDataFrom(RoleTypeEnum role) {
+		return RoleTypeData.builder()
+				.value(role.getValue())
+				.displayText(role.getDisplayText())
+				.build();
+	}
+	
+	public static StatusTypeData generateStatusTypeDataFrom(StatusTypeEnum status) {
+		return StatusTypeData.builder()
+				.value(status.getValue())
+				.displayText(status.getDisplayText())
+				.build();
 	}
 	
 }

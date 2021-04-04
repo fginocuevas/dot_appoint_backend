@@ -3,13 +3,10 @@ package com.thenogicode.appoint.appuser.api;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.thenogicode.appoint.appuser.data.AppUserData;
-import com.thenogicode.appoint.appuser.domain.AppUser;
 import com.thenogicode.appoint.appuser.service.AppUserService;
 
 import lombok.RequiredArgsConstructor;
@@ -30,5 +27,5 @@ public class AppUserApiResource {
 	public AppUserData retrieveOne(@PathVariable final String username) {
 		return appUserService.retrieveAppUserByUsername(username);
 	}
-
+	
 }
